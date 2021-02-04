@@ -27,6 +27,15 @@ namespace GenericStuff.Tests
                 new (new SampleCanDoDescription(), "Inigo", Guid.NewGuid());
             Assert.IsTrue(threeple.Description.Length > 0);
             Assert.AreEqual<string>("First: 42; Second: Inigo; Third: ;", threeple.Description);
+
+            int? number = 42;
+            number = null;
+            Nullable<int> number2 = null;
+            number = number2;
+            Tuple<int, string> referenceTuple = default;
+            ValueTuple<int, string> valueTuple = default;
         }
+
+
     }
 }
