@@ -281,3 +281,5 @@ __pycache__/
 
 # Visual Studio code
 .vscode/
+
+.DS_Store
