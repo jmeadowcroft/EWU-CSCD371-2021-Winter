@@ -91,10 +91,40 @@ namespace LinqStuff.Tests
             Assert.AreEqual<int>(332, executionCount);
             Assert.AreEqual<int>(8, methods.Count());
             Assert.AreEqual<int>(498, executionCount);
+            methods = methods.AsEnumerable();
             List<string> list = methods.ToList();
             Assert.AreEqual<int>(664, executionCount);
             foreach (string text in list) { }
             Assert.AreEqual<int>(664, executionCount);
+            
+        }
+
+        [TestMethod]
+        public void LinqMethods()
+        {
+            IEnumerable<string> methods = typeof(string).GetMembers().Select(item => item.Name);
+
+            // Are there any items that match the predicate
+            Assert.IsTrue(methods.Any(item => item.StartsWith('G')));
+
+            // Projection
+            IEnumerable<int> lengthsQuery = methods.Select(item => item.Length);
+
+            // Filter
+            IEnumerable<string> filterdQuery = methods.Where(item => item.StartsWith('G')).ToList();
+
+            // Project and filter
+            lengthsQuery = methods.Where(item => item.StartsWith('G')).Select(item => item.Length);
+
+            List<int> list = methods
+                .Where(
+                    item => item.StartsWith('G'))
+                .Select(
+                    item => item.Length)
+                .ToList();
+
+
+
         }
     }
 }
