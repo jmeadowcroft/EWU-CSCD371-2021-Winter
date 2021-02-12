@@ -56,10 +56,28 @@ namespace GenericStuff.Tests
         {
             Setting<int> intSetting = new();
             Setting<object> objSetting = new();
-            IWriteOnlySetting<object> writeOnlySetting = (IWriteOnlySetting<object>)intSetting;
+            IReadOnlySetting<object> readOnlySetting = (IReadOnlySetting<object>)intSetting;
+            object value = readOnlySetting.Value;
+            IWriteOnlySetting<int> writeOnlySetting = (IWriteOnlySetting<int>)objSetting;
             writeOnlySetting.Value = 42;
-            IReadOnlySetting<int> readOnlySetting = (IReadOnlySetting<int>)objSetting;
-            int number = readOnlySetting.Value;
+        }
+
+        [TestMethod]
+        public void Covariance_WithActionExpressions()
+        {
+            Action<int> actionInt = item => Console.WriteLine(item);
+            actionInt(42);
+            // Action<object> actionObject = (Action<object>)actionInt; ///??
+            // actionObject(42);
+        }
+
+        [TestMethod]
+        public void Covariance_WithFuncExpressions()
+        {
+            Func<object> expressionObject = () => new object();
+            object data = expressionObject();
+            //Func<int> expressionInt = ()=>expressionObject();
+            //int number = expressionInt();
         }
     }
 }
