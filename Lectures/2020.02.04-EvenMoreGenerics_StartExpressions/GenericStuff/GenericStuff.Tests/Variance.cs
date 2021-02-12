@@ -63,21 +63,25 @@ namespace GenericStuff.Tests
         }
 
         [TestMethod]
-        public void Covariance_WithActionExpressions()
+        public void CoVariance_WithActionExpressions()
         {
-            Action<int> actionInt = item => Console.WriteLine(item);
-            actionInt(42);
-            // Action<object> actionObject = (Action<object>)actionInt; ///??
-            // actionObject(42);
+            Action<string> actionString = item => Console.WriteLine(item);
+            actionString("Inigo Montoya");
+            // actionString(new object());
+            Action<object> actionObject = (Action<object>)actionString;
+            actionObject("Princess Butter");
+            actionObject(new object());
         }
 
         [TestMethod]
-        public void Covariance_WithFuncExpressions()
+        public void ContraVariance_WithFuncExpressions()
         {
-            Func<object> expressionObject = () => new object();
-            object data = expressionObject();
-            //Func<int> expressionInt = ()=>expressionObject();
-            //int number = expressionInt();
+            Func<object> funcObject = () => new object();
+            object data = funcObject();
+            // string text = funcObject();
+            Func<string> funcString = ()=> "Inigo Montoya";
+            string number = funcString();
+            object thing = funcString();
         }
     }
 }
