@@ -126,5 +126,13 @@ namespace LinqStuff.Tests
 
 
         }
+
+        [TestMethod]
+        public void GivenMembersOnString_TotalNumberOfCharacterForAllMembers_Returns842()
+        {
+            IEnumerable<string> methods = typeof(string).GetMembers().Select(item => item.Name);
+
+            // Return the total number of characters in all members using LINQ.
+        }
     }
 }
