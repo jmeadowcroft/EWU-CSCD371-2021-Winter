@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace LinqStuff.Tests
@@ -130,9 +131,49 @@ namespace LinqStuff.Tests
         [TestMethod]
         public void GivenMembersOnString_TotalNumberOfCharacterForAllMembers_Returns842()
         {
-            IEnumerable<string> methods = typeof(string).GetMembers().Select(item => item.Name);
+            IEnumerable<string> members = typeof(string).GetMembers().Select(item => item.Name);
 
             // Return the total number of characters in all members using LINQ.
+            int totalCharacters = members.Aggregate(0, (total, next) => total += next.Length);
+            
+            int expected = members.Sum(item=>item.Length);
+
+            Assert.AreEqual<int>(expected, totalCharacters);
+        }
+
+
+        [TestMethod]
+        public void GivenMembersOnString_ReturnMethodWithLongestNameThatBeginsWithGet_Returns842()
+        {
+            IEnumerable<MemberInfo> members = typeof(string).GetMembers();
+            IEnumerable<MethodInfo> methods = members.Where(item => item.MemberType == MemberTypes.Method).Cast<MethodInfo>();
+            // or just
+            methods = typeof(string).GetMethods();
+
+            methods = methods.Where(item => item.Name.StartsWith("Get"));
+
+            // Possible: Preferably avoid calling ToList() unless you need a list (do not call it just for foreach)
+            methods.ToList().ForEach((item) => 
+            {
+                Assert.IsTrue(item.Name.StartsWith("Get"));
+            });
+
+            // Possible but "noisey"
+            foreach (string item in methods.Select(item=>item.Name))
+            {
+                Assert.IsTrue(item.StartsWith("Get"));
+            }
+            // or
+            Assert.IsTrue(methods.All(item => item.Name.StartsWith("Get")));  // Simple is better
+
+            // Search Aggregate & LINQ
+            MethodInfo actual = methods.Aggregate(
+                (longestMethod, nextItem) => longestMethod.Name.Length > nextItem.Name.Length ? longestMethod : nextItem);
+
+            MethodInfo expect = methods.OrderBy(item => item.Name.Length)/*.ThenBy(item => item)*/.Last();
+
+            Assert.AreEqual<string>(expect.Name, actual.Name);
+
         }
     }
 }
